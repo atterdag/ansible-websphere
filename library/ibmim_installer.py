@@ -6,6 +6,12 @@
 # This is an Ansible module. Installs/Uninstall IBM Installation Manager
 #
 
+ANSIBLE_METADATA = {
+    'metadata_version': '1.1',
+    'status': ['preview'],
+    'supported_by': 'community'
+}
+
 DOCUMENTATION = '''
 ---
 module: ibmim_installer
