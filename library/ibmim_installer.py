@@ -1,7 +1,7 @@
 #!/usr/bin/python
-
-#
-# Author: Amir Mofasser <amir.mofasser@gmail.com>
+# Copyright (c) 2017 Valdemar Lemche <valdemar@lemche.net>
+# Copyright (c) 2015 Amir Mofasser <amir.mofasser@gmail.com>
+# The MIT License (MIT) (see https://opensource.org/licenses/MIT)
 #
 # This is an Ansible module. Installs/Uninstall IBM Installation Manager
 #
