@@ -6,7 +6,8 @@
 # This is an Ansible module. Installs/Uninstall IBM Installation Manager
 #
 
-DOCUMENTATION = """
+DOCUMENTATION = '''
+---
 module: ibmim_installer
 version_added: "1.9.4"
 short_description: Install/Uninstall IBM Installation Manager
@@ -15,24 +16,30 @@ description:
 options:
   src:
     required: false
-    description: Path to installation files for Installation Manager
+    description:
+      - Path to installation files for Installation Manager
   dest:
     required: false
     default: "/opt/IBM/InstallationManager"
-    description: Path to desired installation directory of Installation Manager
+    description:
+      - Path to desired installation directory of Installation Manager
   logdir:
     required: false
     default: "/tmp/"
-    description: Path and file name of installation log file
+    description:
+      - Path and file name of installation log file
   state:
     required: false
     choices: [ present, absent ]
     default: "present"
-    description: Whether Installation Manager should be installed or removed
-author: "Amir Mofasser (@amofasser)"
-"""
+    description:
+      - Whether Installation Manager should be installed or removed
+author:
+  - "Amir Mofasser (@amofasser)"
+'''
 
-EXAMPLES = """
+EXAMPLES = '''
+---
 - name: Install
   ibmim: 
     state: present 
@@ -43,7 +50,7 @@ EXAMPLES = """
   ibmim: 
     state: absent
     dest: /opt/IBM/InstallationManager
-"""
+'''
 
 import os
 import subprocess
