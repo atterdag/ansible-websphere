@@ -36,7 +36,7 @@ options:
       - Path and file name of installation log file
   state:
     required: false
-    choices: [ present, absent ]
+    choices: [ "present", "absent" ]
     default: "present"
     description:
       - Whether Installation Manager should be installed or removed
