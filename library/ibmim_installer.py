@@ -36,6 +36,7 @@ options:
       - Whether Installation Manager should be installed or removed
 author:
   - "Amir Mofasser (@amofasser)"
+  - "Valdemar Lemche (@atterdag)"
 '''
 
 EXAMPLES = '''
