@@ -79,16 +79,16 @@ def getState(stdout_value, name, wsadmin):
     was_dict["was_name"] = name
 
     try:
-	if wsadmin:
+  if wsadmin:
            match = re.search("(Server \"{0}\" is already running)".format(name), stdout_value)
            if match:
                if match.group(0):
                    was_dict["was_state"] = 1
-	else:
-	   match = re.search("(An instance of the server may already be running: {0})".format(name), stdout_value)
-	   if match:
-	      if match.group(0):
-		   was_dict["was_state"] = 1 
+  else:
+     match = re.search("(An instance of the server may already be running: {0})".format(name), stdout_value)
+     if match:
+        if match.group(0):
+       was_dict["was_state"] = 1 
 
     except AttributeError:
         raise
@@ -107,7 +107,7 @@ def main():
             username = dict(required=False),
             password = dict(required=False),
             wasdir  = dict(required=True),
-	    wsadmin = dict(default=True, type='bool')
+      wsadmin = dict(default=True, type='bool')
         ),
         supports_check_mode = True
     )
@@ -127,16 +127,16 @@ def main():
     cmd = ""
     credentials = ""
     if username is not None:
-	credentials += " {0} -username {1} ".format(credentials, username)
+  credentials += " {0} -username {1} ".format(credentials, username)
     if password is not None:
-  	credentials += " {0} -password {1} ".format(credentials, password)
+    credentials += " {0} -password {1} ".format(credentials, password)
 
     # Start server
     if state == 'started':
-	if wsadmin: 
-	    cmd = "{0}/bin/wsadmin.sh -lang jython {1} -c \"AdminControl.startServer('{2}', '{3}')\"".format(wasdir, credentials, name, node) 
-	else:
-	    cmd = "{0}/bin/startServer.sh {1} {2}".format(wasdir, name, credentials)
+  if wsadmin: 
+      cmd = "{0}/bin/wsadmin.sh -lang jython {1} -c \"AdminControl.startServer('{2}', '{3}')\"".format(wasdir, credentials, name, node) 
+  else:
+      cmd = "{0}/bin/startServer.sh {1} {2}".format(wasdir, name, credentials)
         child = subprocess.Popen(
             [cmd],
             shell=True,
@@ -144,13 +144,13 @@ def main():
             stderr=subprocess.PIPE    
         )
         stdout_value, stderr_value = child.communicate()
-	if child.returncode != 0:
-	    module.fail_json(
-		changed=False,
-		msg="Failed to start server {0} on node {1}".format(name, node),
-		stdout=stdout_value,
-		stderr=stderr_value
-	    )
+  if child.returncode != 0:
+      module.fail_json(
+    changed=False,
+    msg="Failed to start server {0} on node {1}".format(name, node),
+    stdout=stdout_value,
+    stderr=stderr_value
+      )
 
         if getState(stdout_value, name, wsadmin)["was_state"] == 1:
             module.exit_json(
@@ -175,10 +175,10 @@ def main():
 
     # Stop server
     if state == 'stopped':
-	if wsadmin:
-	   cmd = "{0}/bin/wsadmin.sh -lang jython {1} -c \"AdminControl.stopServer('{2}', '{3}')\"".format(wasdir, credentials, name, node)
-	else:
-	   cmd = "{0}/bin/stopServer.sh {1} {2}".format(wasdir, name, credentials)
+  if wsadmin:
+     cmd = "{0}/bin/wsadmin.sh -lang jython {1} -c \"AdminControl.stopServer('{2}', '{3}')\"".format(wasdir, credentials, name, node)
+  else:
+     cmd = "{0}/bin/stopServer.sh {1} {2}".format(wasdir, name, credentials)
         child = subprocess.Popen(
             [cmd],
             shell=True,
@@ -186,13 +186,13 @@ def main():
             stderr=subprocess.PIPE    
         )
         stdout_value, stderr_value = child.communicate()
-	if child.returncode != 0:
-	    module.fail_json(
-		changed=False,
-		msg="Failed to stop server {0} on node {1}".format(name, node),
-		stdout=stdout_value,
-		stderr=stderr_value
-	    )
+  if child.returncode != 0:
+      module.fail_json(
+    changed=False,
+    msg="Failed to stop server {0} on node {1}".format(name, node),
+    stdout=stdout_value,
+    stderr=stderr_value
+      )
         if getState(stdout_value, name, wsadmin)["was_state"] == 0:
             module.exit_json(
                 changed=False,
