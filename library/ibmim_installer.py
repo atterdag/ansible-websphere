@@ -44,18 +44,34 @@ options:
     choices:
       - present
       - absent
+  accessrights:
+    description:
+      - Allow only root, a normal user, or members of a normal user's primary group to run IIM
+    default: admin
+    choices:
+      - admin
+      - nonAdmin
+      - group
+    aliases:
+      - aR
+    version_added: "2.4"
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
+notes:
+  - For more information about IIM accessrights see  U(https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/r_admin_nonadmin.html)
 '''
 
 EXAMPLES = '''
 ---
 - name: Install
+  become: yes
+  become_user: was
   ibmim:
     state: present
     src: /some/dir/install/
     logdir: /tmp/im_install.log
+    accessrights: nonAdmin
 
 - name: Uninstall
   ibmim:
