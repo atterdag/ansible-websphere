@@ -55,6 +55,12 @@ options:
     aliases:
       - aR
     version_added: "2.4"
+  reponsefile:
+    description:
+      - Create IIM reponse file in C(logdir)
+    default: false
+    type: bool
+    version_added: "2.4"
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
