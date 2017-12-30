@@ -75,6 +75,12 @@ options:
     aliases:
       - sRD
     version_added: "2.4"
+  preserve:
+    description:
+      - Preseve packages used during installation
+    default: false
+    type: bool
+    version_added: "2.4"
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
