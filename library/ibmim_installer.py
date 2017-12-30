@@ -38,10 +38,12 @@ options:
       - Path and file name of installation log file
     default: /tmp
   state:
-    choices: [ "present", "absent" ]
     description:
       - Whether Installation Manager should be installed or removed
     default: present
+    choices:
+      - present
+      - absent
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
