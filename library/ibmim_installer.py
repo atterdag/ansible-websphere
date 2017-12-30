@@ -69,8 +69,8 @@ EXAMPLES = '''
   become_user: was
   ibmim:
     state: present
-    src: /some/dir/install/
     logdir: /tmp/im_install.log
+    src: /srv/was/IBMIM
     accessrights: nonAdmin
 
 - name: Uninstall
