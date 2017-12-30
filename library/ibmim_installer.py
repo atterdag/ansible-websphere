@@ -24,10 +24,15 @@ options:
     description:
       - Path to installation files for Installation Manager
     default: "/install"
+    aliases:
+      - repositories
   dest:
     description:
       - Path to desired installation directory of Installation Manager
     default: /opt/IBM/InstallationManager
+    aliases:
+      - installationdirectory
+      - iD
   logdir:
     description:
       - Path and file name of installation log file
