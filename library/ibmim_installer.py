@@ -25,18 +25,18 @@ options:
       - Path to installation files for Installation Manager
     default: "/install"
   dest:
-    default: "/opt/IBM/InstallationManager"
     description:
       - Path to desired installation directory of Installation Manager
+    default: /opt/IBM/InstallationManager
   logdir:
-    default: "/tmp/"
     description:
       - Path and file name of installation log file
+    default: /tmp
   state:
     choices: [ "present", "absent" ]
-    default: "present"
     description:
       - Whether Installation Manager should be installed or removed
+    default: present
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
