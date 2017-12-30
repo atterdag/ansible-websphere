@@ -21,21 +21,17 @@ description:
   - Install/Uninstall IBM Installation Manager
 options:
   src:
-    required: false
     description:
       - Path to installation files for Installation Manager
   dest:
-    required: false
     default: "/opt/IBM/InstallationManager"
     description:
       - Path to desired installation directory of Installation Manager
   logdir:
-    required: false
     default: "/tmp/"
     description:
       - Path and file name of installation log file
   state:
-    required: false
     choices: [ "present", "absent" ]
     default: "present"
     description:
