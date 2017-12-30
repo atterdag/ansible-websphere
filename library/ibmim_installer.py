@@ -68,6 +68,13 @@ options:
     aliases:
       - dL
     version_added: "2.4"
+  sharedresourcesdirectory:
+    description:
+      - Repository path of installed packages if preserve is set to yes
+    default: /opt/IBM/IMShared
+    aliases:
+      - sRD
+    version_added: "2.4"
 author:
   - "Amir Mofasser (@amofasser)"
   - "Valdemar Lemche (@atterdag)"
