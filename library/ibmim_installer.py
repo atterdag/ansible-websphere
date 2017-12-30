@@ -23,6 +23,7 @@ options:
   src:
     description:
       - Path to installation files for Installation Manager
+    default: "/install"
   dest:
     default: "/opt/IBM/InstallationManager"
     description:
