@@ -137,18 +137,21 @@ im_version:
     type: string
     sample: "1.8.0"
     version_added: "1.9.4"
+
 im_internal_version:
     description: IBM Installation Manager version and date stamp
     returned: success
     type: string
     sample: "1.8.0.20140902_1503"
     version_added: "1.9.4"
+
 im_arch:
     description: IBM Installation Manager version CPU architecture
     returned: success
     type: string
     sample: "64-bit"
     version_added: "1.9.4"
+
 im_header:
     description: IBM Installation Manager version output header
     returned: success
