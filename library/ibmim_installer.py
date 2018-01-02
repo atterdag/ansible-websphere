@@ -17,95 +17,118 @@ ANSIBLE_METADATA = {
 DOCUMENTATION = """
 ---
 module: ibmim_installer
-version_added: "1.9.4"
-short_description: Install/Uninstall IBM Installation Manager
+
+short_description:
+    - Install/Uninstall IBM Installation Manager
+
 description:
-  - Install/Uninstall IBM Installation Manager
-options:
-  src:
-    description:
-      - Path to installation files for Installation Manager
-    default: "/install"
-    aliases:
-      - repositories
-  dest:
-    description:
-      - Path to desired installation directory of Installation Manager
-    default: /opt/IBM/InstallationManager
-    aliases:
-      - installationdirectory
-      - iD
-  logdir:
-    description:
-      - Path and file name of installation log file
-    default: /tmp
-  state:
-    description:
-      - Whether Installation Manager should be installed or removed
-    default: present
-    choices:
-      - present
-      - absent
-  accessrights:
-    description:
-      - Allow only root, a normal user, or members of a normal user's primary group to run IIM
-    default: admin
-    choices:
-      - admin
-      - nonAdmin
-      - group
-    aliases:
-      - aR
-    version_added: "2.4"
-  reponsefile:
-    description:
-      - Create IIM reponse file in C(logdir)
-    default: false
-    type: bool
-    version_added: "2.4"
-  datalocation:
-    description:
-      - Specify the directory location for the Installation Manager data directory. This location stores information about installed packages.
-    default: /opt/IBM/IMDataLocation
-    aliases:
-      - dL
-    version_added: "2.4"
-  sharedresourcesdirectory:
-    description:
-      - Repository path of installed packages if preserve is set to yes
-    default: /opt/IBM/IMShared
-    aliases:
-      - sRD
-    version_added: "2.4"
-  preserve:
-    description:
-      - Preseve packages used during installation
-    default: false
-    type: bool
-    version_added: "2.4"
+    - Install/Uninstall IBM Installation Manager
+
+version_added: "1.9.4"
+
 author:
-  - "Amir Mofasser (@amofasser)"
-  - "Valdemar Lemche (@atterdag)"
+    - "Amir Mofasser (@amofasser)"
+    - "Valdemar Lemche (@atterdag)"
+
+options:
+    accessRights:
+        description:
+            - Allow only root, a normal user, or members of a normal user's
+              primary group to run IIM
+        default: admin
+        choices:
+            - admin
+            - nonAdmin
+            - group
+        aliases:
+            - aR
+        version_added: "2.4"
+
+    dataLocation:
+        description:
+            - Specify the directory location for the Installation Manager data
+              directory. This location stores information about installed
+              packages.
+        default: /opt/IBM/IMDataLocation
+        aliases:
+            - dL
+        version_added: "2.4"
+
+    dest:
+        description:
+            - Path to desired installation directory of Installation Manager
+        default: /opt/IBM/InstallationManager
+        aliases:
+            - installationDirectory
+            - iD
+
+    logdir:
+        description:
+            - Path and file name of installation log file
+        default: /tmp
+
+    preserve:
+        description:
+            - Preseve packages used during installation
+        default: false
+        type: bool
+        version_added: "2.4"
+
+    reponsefile:
+        description:
+            - Create IIM reponse file in C(logdir)
+        default: false
+        type: bool
+        aliases:
+            - record
+        version_added: "2.4"
+
+    sharedResourcesDirectory:
+        description:
+            - Repository path of installed packages if preserve is set to yes
+        default: /opt/IBM/IMShared
+        aliases:
+            - sRD
+        version_added: "2.4"
+
+    src:
+        description:
+            - Path to installation files for Installation Manager
+        default: "/install"
+        aliases:
+            - repositories
+
+    state:
+        description:
+            - Whether Installation Manager should be installed or removed
+        default: present
+        choices:
+            - present
+            - absent
+
 notes:
-  - For more information about IIM accessrights see  U(https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/r_admin_nonadmin.html)
+    - For more information about IIM accessrights see
+      U(https://www.ibm.com/support/knowledgecenter/en/SSDV2W_1.8.5/com.ibm.silentinstall12.doc/topics/r_admin_nonadmin.html)
 """
 
----
 EXAMPLES = """
+# Install IIM into /srv/was/IBMIM using user was
 - name: Install
-  become: yes
-  become_user: was
-  ibmim:
-    state: present
-    src: /srv/was/IBMIM
-    logdir: /srv/was/tmp'
-    accessrights: nonAdmin
+    become: yes
+    become_user: was
+    ibmim:
+        state: present
+        src: /srv/was/IBMIM
+        logdir: /srv/was/tmp'
+        accessrights: nonAdmin
 
+# Uninstall IIM installed in /opt/IBM/InstallationManager as root
 - name: Uninstall
-  ibmim:
-    state: absent
-    dest: /opt/IBM/InstallationManager
-'''
+    become: yes
+    ibmim:
+        state: absent
+        dest: /opt/IBM/InstallationManager
+"""
 
 RETURN = """
 im_version:
