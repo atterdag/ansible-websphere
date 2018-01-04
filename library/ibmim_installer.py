@@ -174,7 +174,6 @@ import re
 
 "import module snippets"
 from ansible.module_utils.basic import AnsibleModule
-# from ansible.module_utils.basic import *
     """
 
     module = None
