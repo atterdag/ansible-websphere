@@ -170,6 +170,8 @@ import platform
 import datetime
 class InstallationManagerInstaller(object):
     """ TBW
+import re
+
 "import module snippets"
 from ansible.module_utils.basic import AnsibleModule
 # from ansible.module_utils.basic import *
