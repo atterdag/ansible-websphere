@@ -172,9 +172,55 @@ import re
 
 "import module snippets"
 from ansible.module_utils.basic import AnsibleModule
+
+def run_module():
+    """ Runs the module with arguments
     """
 
-    module = None
+    "define the available arguments/parameters that a user can pass to the module"
+    module_args = dict(
+        accessRights=dict(
+            type="list",
+            default="admin",
+            choices=["admin", "nonAdmin", "group"]
+        ),
+        dataLocation=dict(
+            default="/opt/IBM/IMDataLocation"
+        ),
+        dest=dict(
+            default="/opt/IBM/InstallationManager"
+        ),
+        logdir=dict(
+            default="/tmp/"
+        ),
+        preserve=dict(
+            type="bool"
+        ),
+        reponsefile=dict(
+            type="bool"
+        ),
+        sharedResourcesDirectory=dict(
+            default="/opt/IBM/IMShared"
+        ),
+        src=dict(
+            default="/install"
+        ),
+        state=dict(
+            type="list",
+            default="present",
+            choices=["present", "absent"]
+        )
+    )
+
+    "seed the result dict in the object"
+    result = dict(
+        changed=False,
+        im_version='',
+        im_internal_version='',
+        im_arch='',
+        im_header=''
+    )
+
     module_facts = dict(
         im_version=None,
         im_internal_version=None,
