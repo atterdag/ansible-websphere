@@ -168,7 +168,6 @@ import os
 import subprocess
 import platform
 import datetime
-#import socket
 class InstallationManagerInstaller(object):
     """ TBW
 "import module snippets"
