@@ -168,8 +168,6 @@ import os
 import subprocess
 import platform
 import datetime
-class InstallationManagerInstaller(object):
-    """ TBW
 import re
 
 "import module snippets"
@@ -184,177 +182,168 @@ from ansible.module_utils.basic import AnsibleModule
         im_header=None
     )
 
-    def __init__(self):
-        # Read arguments
-        self.module = AnsibleModule(
-            argument_spec=dict(
-                state=dict(
-                    default='present',
-                    choices=['present', 'absent']
-                ),
-                src=dict(
-                    required=False
-                ),
-                dest=dict(
-                    default="/opt/IBM/InstallationManager/"
-                ),
-                logdir=dict(
-                    default="/tmp/"
-                )
-            ),
-            supports_check_mode=True
-        )
+    # the AnsibleModule object will be our abstraction working with Ansible
+    # this includes instantiation, a couple of common attr would be the
+    # args/params passed to the execution, as well as if the module
+    # supports check mode
+    module = AnsibleModule(
+        argument_spec=module_args,
+        supports_check_mode=True
+    )
 
-    def isProvisioned(self, dest):
-        """Checks if Installation Manager is already installed at dest
-        :param dest: Installation directory of Installation Manager
-        :return: True if already provisioned. False if not provisioned
-        """
-        # If destination dir does not exists then its safe to assume that IM is not installed
-        if not os.path.exists(dest):
-            return False
-        else:
-            if "installed" in self.getVersion(dest)["im_header"]:
-                return True
-            return False
+def isProvisioned(self, dest):
+    """Checks if Installation Manager is already installed at dest
+    :param dest: Installation directory of Installation Manager
+    :return: True if already provisioned. False if not provisioned
+    """
 
-    def getVersion(self, dest):
-        """Runs imcl with the version parameter and stores the output in a dict
-        :param dest: Installation directory of Installation Manager
-        :return: dict
-        """
-        child = subprocess.Popen(
-            ["{0}/eclipse/tools/imcl version".format(dest)],
-            shell=True,
-            stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE
-        )
-        stdout_value, stderr_value = child.communicate()
+    """ If destination dir does not exists then its safe to assume that IM is
+    not installed
+    """
+    if not os.path.exists(dest):
+        return False
+    else:
+        if "installed" in getVersion(dest)["im_header"]:
+            return True
+        return False
 
-        try:
-            self.module_facts["im_version"] = \
-                re.search("Version: ([0-9].*)", stdout_value).group(1)
-            self.module_facts["im_internal_version"] = \
-                re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
-            self.module_facts["im_arch"] = \
-                re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
-            self.module_facts["im_header"] = \
-                re.search("Installation Manager.*", stdout_value).group(0)
-        except AttributeError:
-            pass
+def getVersion(self, dest):
+    """Runs imcl with the version parameter and stores the output in a dict
+    :param dest: Installation directory of Installation Manager
+    :return: dict
+    """
+    child = subprocess.Popen(
+        ["{0}/eclipse/tools/imcl version".format(dest)],
+        shell=True,
+        stdout=subprocess.PIPE,
+        stderr=subprocess.PIPE
+    )
+    stdout_value, stderr_value = child.communicate()
 
-        return self.module_facts
+    try:
+        module_facts["im_version"] = \
+            re.search("Version: ([0-9].*)", stdout_value).group(1)
+        module_facts["im_internal_version"] = \
+            re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
+        module_facts["im_arch"] = \
+            re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
+        module_facts["im_header"] = \
+            re.search("Installation Manager.*", stdout_value).group(0)
+    except AttributeError:
+        pass
 
-    def main(self):
-        """TBW
-        """
+    return module_facts
 
-        state = self.module.params['state']
-        src = self.module.params['src']
-        dest = self.module.params['dest']
-        logdir = self.module.params['logdir']
+def main():
+    """TBW
+    """
 
-        if state == 'present':
+    state = module.params['state']
+    src = module.params['src']
+    dest = module.params['dest']
+    logdir = module.params['logdir']
 
-            if self.module.check_mode:
-                self.module.exit_json(
-                    changed=False,
-                    msg="IBM IM where to be installed at {0}".format(dest)
-                )
+    if state == 'present':
 
-            "Check if IM is already installed"
-            if not self.isProvisioned(dest):
+        if module.check_mode:
+            module.exit_json(
+                changed=False,
+                msg="IBM IM where to be installed at {0}".format(dest)
+            )
 
-                # Check if paths are valid
-                if not os.path.exists(src+"/install"):
-                    self.module.fail_json(msg=src+"/install not found")
+        "Check if IM is already installed"
+        if not isProvisioned(dest):
 
-                if not os.path.exists(logdir):
-                    if not os.listdir(logdir):
-                        os.makedirs(logdir)
+            # Check if paths are valid
+            if not os.path.exists(src+"/install"):
+                module.fail_json(msg=src + "/install not found")
 
-                logfile = "{0}_ibmim_{1}.xml".format(
-                    platform.node(),
-                    datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
-                )
-                child = subprocess.Popen(
-                    ["{0}/install "
-                     "-acceptLicense "
-                     "--launcher.ini {0}/silent-install.ini "
-                     "-log {1}/{2} "
-                     "-installationDirectory {3}".format(src, logdir, logfile, dest)],
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-                stdout_value, stderr_value = child.communicate()
-                if child.returncode != 0:
-                    self.module.fail_json(
-                        msg="IBM IM installation failed",
-                        stderr=stderr_value,
-                        stdout=stdout_value,
-                        module_facts=self.module_facts
-                    )
-                # Module finished. Get version of IM after installation so that
-                # we can print it to the user
-                self.getVersion(dest)
-                self.module.exit_json(
-                    msg="IBM IM installed successfully",
-                    changed=True,
-                    stdout=stdout_value,
+            if not os.path.exists(logdir):
+                if not os.listdir(logdir):
+                    os.makedirs(logdir)
+
+            logfile = "{0}_ibmim_{1}.xml".format(
+                platform.node(),
+                datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+            )
+            child = subprocess.Popen(
+                ["{0}/install "
+                 "-acceptLicense "
+                 "--launcher.ini {0}/silent-install.ini "
+                 "-log {1}/{2} "
+                 "-installationDirectory {3}".format(src, logdir, logfile, dest)],
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(
+                    msg="IBM IM installation failed",
                     stderr=stderr_value,
-                    module_facts=self.module_facts
-                )
-            else:
-                self.module.exit_json(
-                    changed=False,
-                    msg="IBM IM is already installed",
-                    module_facts=self.module_facts
-                )
-
-        if state == 'absent':
-
-            if self.module.check_mode:
-                self.module.exit_json(
-                    changed=False,
-                    msg="IBM IM where to be uninstalled from {0}".format(dest),
-                    module_facts=self.module_facts
-                )
-
-            "Check if IM is already installed"
-            if self.isProvisioned(dest):
-                uninstall_dir = "/var/ibm/InstallationManager/uninstall/uninstallc"
-                if not os.path.exists("/var/ibm/InstallationManager/uninstall/uninstallc"):
-                    self.module.fail_json(msg=uninstall_dir + " does not exist")
-                child = subprocess.Popen(
-                    [uninstall_dir],
-                    shell=True,
-                    stdout=subprocess.PIPE,
-                    stderr=subprocess.PIPE
-                )
-                stdout_value, stderr_value = child.communicate()
-                if child.returncode != 0:
-                    self.module.fail_json(
-                        msg="IBM IM uninstall failed",
-                        stderr=stderr_value,
-                        stdout=stdout_value,
-                        module_facts=self.module_facts
-                    )
-
-                # Module finished
-                self.module.exit_json(
-                    changed=True,
-                    msg="IBM IM uninstalled successfully",
                     stdout=stdout_value,
-                    module_facts=self.module_facts
+                    module_facts=module_facts
                 )
-            else:
-                self.module.exit_json(
-                    changed=False,
-                    msg="IBM IM is not installed",
-                    module_facts=self.module_facts
+            # Module finished. Get version of IM after installation so that
+            # we can print it to the user
+            getVersion(dest)
+            module.exit_json(
+                msg="IBM IM installed successfully",
+                changed=True,
+                stdout=stdout_value,
+                stderr=stderr_value,
+                module_facts=module_facts
+            )
+        else:
+            module.exit_json(
+                changed=False,
+                msg="IBM IM is already installed",
+                module_facts=module_facts
+            )
+
+    elif state == 'absent':
+
+        if module.check_mode:
+            module.exit_json(
+                changed=False,
+                msg="IBM IM where to be uninstalled from {0}".format(dest),
+                module_facts=module_facts
+            )
+
+        "Check if IM is already installed"
+        if isProvisioned(dest):
+            uninstall_dir = "/var/ibm/InstallationManager/uninstall/uninstallc"
+            if not os.path.exists("/var/ibm/InstallationManager/uninstall/uninstallc"):
+                module.fail_json(msg=uninstall_dir + " does not exist")
+            child = subprocess.Popen(
+                [uninstall_dir],
+                shell=True,
+                stdout=subprocess.PIPE,
+                stderr=subprocess.PIPE
+            )
+            stdout_value, stderr_value = child.communicate()
+            if child.returncode != 0:
+                module.fail_json(
+                    msg="IBM IM uninstall failed",
+                    stderr=stderr_value,
+                    stdout=stdout_value,
+                    module_facts=module_facts
                 )
+
+            # Module finished
+            module.exit_json(
+                changed=True,
+                msg="IBM IM uninstalled successfully",
+                stdout=stdout_value,
+                module_facts=module_facts
+            )
+        else:
+            module.exit_json(
+                changed=False,
+                msg="IBM IM is not installed",
+                module_facts=module_facts
+            )
+
 
 if __name__ == '__main__':
-    imi = InstallationManagerInstaller()
-    imi.main()
+    main()
