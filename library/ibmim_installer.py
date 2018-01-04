@@ -8,6 +8,10 @@
 """This is an Ansible module. Installs/Uninstall IBM Installation Manager
 """
 
+from __future__ import absolute_import, division, print_function
+__metaclass__ = type
+
+
 ANSIBLE_METADATA = {
     'metadata_version': '1.1',
     'status': ['preview'],
@@ -167,6 +171,9 @@ import datetime
 #import socket
 class InstallationManagerInstaller(object):
     """ TBW
+"import module snippets"
+from ansible.module_utils.basic import AnsibleModule
+# from ansible.module_utils.basic import *
     """
 
     module = None
@@ -348,7 +355,6 @@ class InstallationManagerInstaller(object):
                     module_facts=self.module_facts
                 )
 
-"import module snippets"
 if __name__ == '__main__':
     imi = InstallationManagerInstaller()
     imi.main()
