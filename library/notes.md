@@ -8,6 +8,30 @@ Module | `M()`
 URL    | `U()`
 Const  | `C()`
 
+# Ansible option types
+
+Type    | Yaml type    | Yaml default value | Python type | Python default value
+:------ | :----------- | :----------------- | :---------- | --------------------
+Boolean | `boolean`    | `true`/`false`     | `bool`      | `True`/`False`
+Hash    | `dictionary` |                    | `dict`      |
+Integer | `integer`    |                    | `int`       |
+String  | `string`     | `test value`       | `str`       | `test value`
+JSON    | `json`       |                    | `json`      |
+Array   | `list`       |                    | `list`      |
+Path    | `path`       |                    | `path`      |
+
+## DOCUMENTATION example
+
+```yaml
+type: bool
+```
+
+## module_args example
+
+```python
+type="bool"
+```
+
 # imcl command for IIM (from ansible role)
 
 ```
