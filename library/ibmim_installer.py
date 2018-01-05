@@ -244,7 +244,7 @@ def run_module():
         supports_check_mode=True
     )
 
-def isProvisioned(self, dest):
+def isProvisioned(dest):
     """Checks if Installation Manager is already installed at dest
     :param dest: Installation directory of Installation Manager
     :return: True if already provisioned. False if not provisioned
@@ -260,7 +260,7 @@ def isProvisioned(self, dest):
             return True
         return False
 
-def getVersion(self, dest):
+def getVersion(dest):
     """Runs imcl with the version parameter and stores the output in a dict
     :param dest: Installation directory of Installation Manager
     :return: dict
