@@ -103,7 +103,7 @@ options:
     src:
         description:
             - Path to installation files for Installation Manager
-        default: "/install"
+        required: true
         type: path
         aliases:
             - repositories
