@@ -260,6 +260,7 @@ def isProvisioned(dest):
             return True
         return False
 
+
 def getVersion(dest):
     """Runs imcl with the version parameter and stores the output in a dict
     :param dest: Installation directory of Installation Manager
@@ -308,7 +309,7 @@ def main():
         if not isProvisioned(dest):
 
             # Check if paths are valid
-            if not os.path.exists(src+"/install"):
+            if not os.path.exists(src + "/install"):
                 module.fail_json(msg=src + "/install not found")
 
             if not os.path.exists(logdir):
@@ -324,7 +325,10 @@ def main():
                  "-acceptLicense "
                  "--launcher.ini {0}/silent-install.ini "
                  "-log {1}/{2} "
-                 "-installationDirectory {3}".format(src, logdir, logfile, dest)],
+                 "-installationDirectory {3}".format(src,
+                                                     logdir,
+                                                     logfile,
+                                                     dest)],
                 shell=True,
                 stdout=subprocess.PIPE,
                 stderr=subprocess.PIPE
@@ -337,8 +341,9 @@ def main():
                     stdout=stdout_value,
                     module_facts=module_facts
                 )
-            # Module finished. Get version of IM after installation so that
-            # we can print it to the user
+            """Module finished. Get version of IM after installation so that
+            we can print it to the user
+            """
             getVersion(dest)
             module.exit_json(
                 msg="IBM IM installed successfully",
