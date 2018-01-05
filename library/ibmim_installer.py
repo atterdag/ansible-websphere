@@ -44,6 +44,7 @@ options:
             - admin
             - nonAdmin
             - group
+        type: string
         aliases:
             - aR
         version_added: "2.4"
@@ -54,6 +55,7 @@ options:
               directory. This location stores information about installed
               packages.
         default: /opt/IBM/IMDataLocation
+        type: path
         aliases:
             - dL
         version_added: "2.4"
@@ -62,6 +64,7 @@ options:
         description:
             - Path to desired installation directory of Installation Manager
         default: /opt/IBM/InstallationManager
+        type: path
         aliases:
             - installationDirectory
             - iD
@@ -70,19 +73,20 @@ options:
         description:
             - Path and file name of installation log file
         default: /tmp
+        type: path
 
     preserve:
         description:
             - Preseve packages used during installation
         default: false
-        type: bool
+        type: boolean
         version_added: "2.4"
 
     reponsefile:
         description:
             - Create IIM reponse file in C(logdir)
         default: false
-        type: bool
+        type: boolean
         aliases:
             - record
         version_added: "2.4"
@@ -91,6 +95,7 @@ options:
         description:
             - Repository path of installed packages if preserve is set to yes
         default: /opt/IBM/IMShared
+        type: path
         aliases:
             - sRD
         version_added: "2.4"
@@ -99,6 +104,7 @@ options:
         description:
             - Path to installation files for Installation Manager
         default: "/install"
+        type: path
         aliases:
             - repositories
 
@@ -109,6 +115,7 @@ options:
         choices:
             - present
             - absent
+        type: string
 
 notes:
     - For more information about IIM accessrights see
