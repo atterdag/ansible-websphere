@@ -301,33 +301,33 @@ def install(module):
             platform.node(),
             datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         )
-
+        imcl_command = "{7}/tools/imcl install com.ibm.cic.agent " \
+            "-acceptLicense " \
+            "-accessRights {0} " \
+            "-eclipseLocation {2} " \
+            "-installationDirectory {2} " \
+            "-dataLocation {1} " \
+            "-log {3}/{8} " \
+            "-nl en " \
+            "-record {3}/{9} " \
+            "-repositories {7} " \
+            "-sharedResourcesDirectory {6} " \
+            "-preferences com.ibm.cic.common.core.preferences.keepFetchedFiles={4}," \
+            "com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts={4}," \
+            "offering.service.repositories.areUsed=false," \
+            "com.ibm.cic.common.core.preferences.searchForUpdates=false " \
+            .format(module.params['accessRights'],
+                module.params['dataLocation'],
+                module.params['dest'],
+                module.params['logdir'],
+                module.params['preserve'],
+                module.params['reponsefile'],
+                module.params['sharedResourcesDirectory'],
+                module.params['src'],
+                logfile,
+                responsefile)
         child = subprocess.Popen(
-            ["{7}/tools/imcl"
-             "-acceptLicense"
-             "-accessRights {0}"
-             "-eclipseLocation {2}"
-             "-installationDirectory {2}"
-             "-dataLocation {1}"
-             "-log {3}/{8}"
-             "-nl en"
-             "-record {3}/{9}"
-             "-repositories {7}"
-             "-sharedResourcesDirectory {6}"
-             "-preferences com.ibm.cic.common.core.preferences.keepFetchedFiles={4},\
-             com.ibm.cic.common.core.preferences.preserveDownloadedArtifacts={4},\
-             offering.service.repositories.areUsed=false,\
-             com.ibm.cic.common.core.preferences.searchForUpdates=false"
-             "-silent".format(module.params['accessRights'],
-                              module.params['dataLocation'],
-                              module.params['dest'],
-                              module.params['logdir'],
-                              module.params['preserve'],
-                              module.params['reponsefile'],
-                              module.params['sharedResourcesDirectory'],
-                              module.params['src'],
-                              logfile,
-                              responsefile)],
+            [imcl_command],
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
@@ -368,13 +368,15 @@ def uninstall(module):
             msg="IBM IM where to be uninstalled from {0}".format(dest),
             module_facts=module_facts
         )
+
+    imcl_command = "{0}/eclipse/tools/imcl".format(module.params['dest'])
+
     "Check if IM is already installed"
     if isProvisioned(dest):
-        uninstall_dir = "/var/ibm/InstallationManager/uninstall/uninstallc"
-        if not os.path.exists("/var/ibm/InstallationManager/uninstall/uninstallc"):
-            module.fail_json(msg=uninstall_dir + " does not exist")
+        if not os.path.exists(imcl_command):
+            module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
-            [uninstall_dir],
+            [imcl_command + " uninstall com.ibm.cic.agent"],
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
