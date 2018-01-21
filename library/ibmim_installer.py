@@ -210,7 +210,7 @@ def getVersion(dest):
         stderr=subprocess.PIPE
     )
     stdout_value, stderr_value = child.communicate()
-
+    module_facts = dict()
     try:
         module_facts["im_version"] = \
             re.search("Version: ([0-9].*)", stdout_value).group(1)
