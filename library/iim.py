@@ -9,6 +9,7 @@ extends_documentation_fragment:
     - iim.documentation
 """
 
+
 class ModuleDocFragment(object):
     "Common parameters for IBM Installation Manager modules"
     DOCUMENTATION = """
