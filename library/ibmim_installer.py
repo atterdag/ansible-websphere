@@ -344,7 +344,7 @@ def install(module):
         """ Module finished. Get version of IM after installation so that
         we can print it to the user
         """
-        getVersion(module.params['dest'])
+        module_facts = getVersion(module.params['dest'])
         module.exit_json(
             msg="IBM Installation Manager installed successfully",
             changed=True,
