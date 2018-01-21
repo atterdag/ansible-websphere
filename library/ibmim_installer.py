@@ -276,7 +276,7 @@ def generate_module_args():
     return module_args
 
 
-def install(module):
+def install(module, module_facts):
     """ TBW
     """
     if module.check_mode:
@@ -360,7 +360,7 @@ def install(module):
         )
 
 
-def uninstall(module):
+def uninstall(module, module_facts):
     """ Uninstall IBMIM
     """
     if module.check_mode:
@@ -432,9 +432,9 @@ def run_module():
     )
 
     if module.params['state'] == 'present':
-        install(module)
+        install(module, module_facts)
     elif module.params['state'] == 'absent':
-        uninstall(module)
+        uninstall(module, module_facts)
 
 
 def main():
