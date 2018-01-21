@@ -283,7 +283,9 @@ def install(module):
     if module.check_mode:
         module.exit_json(
             changed=False,
-            msg="IBM IM where to be installed at {0}".format(module.params['dest'])
+            msg="IBM Installation Manager where to be installed at {0}".format(
+                module.params['dest']
+            )
         )
     "Check if IM is already installed"
     if not isProvisioned(module.params['dest']):
@@ -335,7 +337,7 @@ def install(module):
         stdout_value, stderr_value = child.communicate()
         if child.returncode != 0:
             module.fail_json(
-                msg="IBM IM installation failed",
+                msg="IBM Installation Manager installation failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
                 module_facts=module_facts
@@ -345,7 +347,7 @@ def install(module):
         """
         getVersion(module.params['dest'])
         module.exit_json(
-            msg="IBM IM installed successfully",
+            msg="IBM Installation Manager installed successfully",
             changed=True,
             stdout=stdout_value,
             stderr=stderr_value,
@@ -354,7 +356,7 @@ def install(module):
     else:
         module.exit_json(
             changed=False,
-            msg="IBM IM is already installed",
+            msg="IBM Installation Manager is already installed",
             module_facts=module_facts
         )
 
@@ -365,7 +367,7 @@ def uninstall(module):
     if module.check_mode:
         module.exit_json(
             changed=False,
-            msg="IBM IM where to be uninstalled from {0}".format(dest),
+            msg="IBM Installation Manager where to be uninstalled from {0}".format(module.params('dest')),
             module_facts=module_facts
         )
 
@@ -384,7 +386,7 @@ def uninstall(module):
         stdout_value, stderr_value = child.communicate()
         if child.returncode != 0:
             module.fail_json(
-                msg="IBM IM uninstall failed",
+                msg="IBM Installation Manager uninstall failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
                 module_facts=module_facts
@@ -393,14 +395,14 @@ def uninstall(module):
         # Module finished
         module.exit_json(
             changed=True,
-            msg="IBM IM uninstalled successfully",
+            msg="IBM Installation Manager uninstalled successfully",
             stdout=stdout_value,
             module_facts=module_facts
         )
     else:
         module.exit_json(
             changed=False,
-            msg="IBM IM is not installed",
+            msg="IBM Installation Manager is not installed",
             module_facts=module_facts
         )
 
