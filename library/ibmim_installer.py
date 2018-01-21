@@ -248,7 +248,7 @@ def generate_module_args():
             aliases=["iD", "installationDirectory"]
         ),
         logdir=dict(
-            default="/tmp/",
+            default="/tmp",
             type="path"
         ),
         preserve=dict(
