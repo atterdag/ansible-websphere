@@ -222,7 +222,6 @@ def getVersion(dest):
             re.search("Installation Manager.*", stdout_value).group(0)
     except AttributeError:
         pass
-
     return module_facts
 
 
