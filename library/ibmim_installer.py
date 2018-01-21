@@ -373,7 +373,7 @@ def uninstall(module, module_facts):
     imcl_command = "{0}/eclipse/tools/imcl".format(module.params['dest'])
 
     "Check if IM is already installed"
-    if isProvisioned(dest):
+    if isProvisioned(module.params['dest']):
         if not os.path.exists(imcl_command):
             module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
