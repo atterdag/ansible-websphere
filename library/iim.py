@@ -18,35 +18,38 @@ options:
         description:
             - Path and file name of installation log file
         default: /tmp
+        type: path
 
     preserve:
         description:
             - Preseve packages used during installation
         default: false
-        type: bool
+        type: boolean
         version_added: "2.4"
 
     reponsefile:
         description:
             - Create IIM reponse file in C(logdir)
         default: false
-        type: bool
+        type: boolean
         aliases:
             - record
         version_added: "2.4"
 
     src:
         description:
-            - Path to product repository (installation files)
+            - Path to installation files for Installation Manager
         required: true
+        type: path
         aliases:
             - repositories
 
     state:
         description:
-            - Whether product should be installed or uninstalled
+            - Whether Installation Manager should be installed or removed
         default: present
         choices:
             - present
             - absent
+        type: string
 """
