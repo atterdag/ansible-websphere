@@ -169,6 +169,20 @@ im_header:
     type: string
     sample: "Installation Manager (installed)"
     version_added: "1.9.4"
+
+stdout:
+    description: Standard output from imcl command
+    returned: success
+    type: string
+    sample: "Installed com.ibm.cic.agent_1.8.7000.20170706_2137 to the /opt/IBM/InstallationManager/eclipse directory."
+    version_added: "2.4"
+
+stderr:
+    description: Standard error from imcl command
+    returned: failure
+    type: string
+    sample: "/bin/sh: 1: /tmp/iim/tools/imcl: not found"
+    version_added: "2.4"
 """
 
 import os
