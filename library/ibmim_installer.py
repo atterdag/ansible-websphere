@@ -142,33 +142,38 @@ EXAMPLES = """
 """
 
 RETURN = """
-im_version:
-    description: IBM Installation Manager version installed
-    returned: success
-    type: string
-    sample: "1.8.0"
-    version_added: "1.9.4"
+ansible_facts:
+    description: Data about installed IBM Installation Manager
+    returned: When IIM is installed
+    type: complex
+    contains:
+        iim_version:
+            description: IBM Installation Manager version installed
+            returned: success
+            type: string
+            sample: "1.8.0"
+            version_added: "1.9.4"
 
-im_internal_version:
-    description: IBM Installation Manager version and date stamp
-    returned: success
-    type: string
-    sample: "1.8.0.20140902_1503"
-    version_added: "1.9.4"
+        iim_internal_version:
+            description: IBM Installation Manager version and date stamp
+            returned: success
+            type: string
+            sample: "1.8.0.20140902_1503"
+            version_added: "1.9.4"
 
-im_arch:
-    description: IBM Installation Manager version CPU architecture
-    returned: success
-    type: string
-    sample: "64-bit"
-    version_added: "1.9.4"
+        iim_arch:
+            description: IBM Installation Manager version CPU architecture
+            returned: success
+            type: string
+            sample: "64-bit"
+            version_added: "1.9.4"
 
-im_header:
-    description: IBM Installation Manager version output header
-    returned: success
-    type: string
-    sample: "Installation Manager (installed)"
-    version_added: "1.9.4"
+        iim_header:
+            description: IBM Installation Manager version output header
+            returned: success
+            type: string
+            sample: "Installation Manager (installed)"
+            version_added: "1.9.4"
 
 stdout:
     description: Standard output from imcl command
@@ -207,7 +212,7 @@ def is_installed(dest):
     if not os.path.exists(dest):
         return False
     else:
-        if "installed" in get_version(dest)["im_header"]:
+        if "installed" in get_version(dest)["ansible_facts"]["iim_header"]:
             return True
         return False
 
@@ -224,15 +229,17 @@ def get_version(dest):
         stderr=subprocess.PIPE
     )
     stdout_value, stderr_value = child.communicate()
-    result = dict()
+    result = dict(
+        ansible_facts=dict()
+    )
     try:
-        result["im_version"] = \
+        result["ansible_facts"]["iim_version"] = \
             re.search("Version: ([0-9].*)", stdout_value).group(1)
-        result["im_internal_version"] = \
+        result["ansible_facts"]["iim_internal_version"] = \
             re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
-        result["im_arch"] = \
+        result["ansible_facts"]["iim_arch"] = \
             re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
-        result["im_header"] = \
+        result["ansible_facts"]["iim_header"] = \
             re.search("Installation Manager.*", stdout_value).group(0)
     except AttributeError:
         pass
@@ -429,10 +436,12 @@ def run_module():
     "seed the result dict in the object"
     result = dict(
         changed=False,
-        im_version='',
-        im_internal_version='',
-        im_arch='',
-        im_header=''
+        ansible_facts=dict(
+            iim_version='',
+            iim_internal_version='',
+            iim_arch='',
+            iim_header=''
+        )
     )
     module = AnsibleModule(
         argument_spec=generate_module_args(),
