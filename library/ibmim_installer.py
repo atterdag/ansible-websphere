@@ -127,7 +127,7 @@ EXAMPLES = """
 - name: Install
     become: yes
     become_user: was
-    ibmim:
+    ibmim_installer:
         state: present
         src: /srv/was/IBMIM
         logdir: /srv/was/tmp'
@@ -136,7 +136,7 @@ EXAMPLES = """
 # Uninstall IIM installed in /opt/IBM/InstallationManager as root
 - name: Uninstall
     become: yes
-    ibmim:
+    ibmim_installer:
         state: absent
         dest: /opt/IBM/InstallationManager
 """
