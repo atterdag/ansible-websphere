@@ -20,7 +20,7 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: ibmim_installer
+module: ibm_im_installer
 
 short_description:
     - Install/Uninstall IBM Installation Manager
@@ -127,7 +127,7 @@ EXAMPLES = """
 - name: Install
     become: yes
     become_user: was
-    ibmim_installer:
+    ibm_im_installer:
         state: present
         src: /srv/was/IBMIM
         logdir: /srv/was/tmp'
@@ -136,7 +136,7 @@ EXAMPLES = """
 # Uninstall IIM installed in /opt/IBM/InstallationManager as root
 - name: Uninstall
     become: yes
-    ibmim_installer:
+    ibm_im_installer:
         state: absent
         dest: /opt/IBM/InstallationManager
 """
