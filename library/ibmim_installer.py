@@ -316,7 +316,8 @@ def install(module, result):
             platform.node(),
             datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
         )
-        imcl_command = "{7}/tools/imcl install com.ibm.cic.agent " \
+        imcl_command = "{0}/tools/imcl".format(module.params['src'])
+        imcl_parameters = "install com.ibm.cic.agent " \
             "-acceptLicense " \
             "-accessRights {0} " \
             "-eclipseLocation {2} " \
@@ -332,17 +333,19 @@ def install(module, result):
             "offering.service.repositories.areUsed=false," \
             "com.ibm.cic.common.core.preferences.searchForUpdates=false " \
             .format(module.params['accessRights'],
-                module.params['dataLocation'],
-                module.params['dest'],
-                module.params['logdir'],
-                module.params['preserve'],
-                module.params['reponsefile'],
-                module.params['sharedResourcesDirectory'],
-                module.params['src'],
-                logfile,
-                responsefile)
+                    module.params['dataLocation'],
+                    module.params['dest'],
+                    module.params['logdir'],
+                    module.params['preserve'],
+                    module.params['reponsefile'],
+                    module.params['sharedResourcesDirectory'],
+                    module.params['src'],
+                    logfile,
+                    responsefile)
+        if not os.path.exists(imcl_command):
+            module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
-            [imcl_command],
+            [imcl_command + " " + imcl_parameters],
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
