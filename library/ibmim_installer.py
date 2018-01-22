@@ -224,19 +224,19 @@ def get_version(dest):
         stderr=subprocess.PIPE
     )
     stdout_value, stderr_value = child.communicate()
-    module_facts = dict()
+    result = dict()
     try:
-        module_facts["im_version"] = \
+        result["im_version"] = \
             re.search("Version: ([0-9].*)", stdout_value).group(1)
-        module_facts["im_internal_version"] = \
+        result["im_internal_version"] = \
             re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
-        module_facts["im_arch"] = \
+        result["im_arch"] = \
             re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
-        module_facts["im_header"] = \
+        result["im_header"] = \
             re.search("Installation Manager.*", stdout_value).group(0)
     except AttributeError:
         pass
-    return module_facts
+    return result
 
 
 def generate_module_args():
@@ -290,7 +290,7 @@ def generate_module_args():
     return module_args
 
 
-def install(module, module_facts):
+def install(module, result):
     """ TBW
     """
     if module.check_mode:
@@ -353,7 +353,7 @@ def install(module, module_facts):
                 msg="IBM Installation Manager installation failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                module_facts=module_facts
+                result=result
             )
         """ Module finished. Get version of IM after installation so that
         we can print it to the user
@@ -364,34 +364,39 @@ def install(module, module_facts):
             changed=True,
             stdout=stdout_value,
             stderr=stderr_value,
-            module_facts=module_facts
+            **result
         )
     else:
+        result = get_version(module.params['dest'])
         module.exit_json(
             changed=False,
-            msg="IBM Installation Manager is already installed",
-            module_facts=module_facts
+            msg="IBM Installation Manager is already installed at {0}".format(
+                module.params['dest']
+            ),
+            **result
         )
 
 
-def uninstall(module, module_facts):
+def uninstall(module, result):
     """ Uninstall IBMIM
     """
     if module.check_mode:
+        result = get_version(module.params['dest'])
         module.exit_json(
             changed=False,
-            msg="IBM Installation Manager where to be uninstalled from {0}".format(module.params('dest')),
-            module_facts=module_facts
+            msg="IBM Installation Manager where to be uninstalled from {0}".format(
+                module.params('dest')
+            ),
+            **result
         )
-
     imcl_command = "{0}/eclipse/tools/imcl".format(module.params['dest'])
-
+    imcl_parameters = "uninstall com.ibm.cic.agent"
     "Check if IM is already installed"
     if is_installed(module.params['dest']):
         if not os.path.exists(imcl_command):
             module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
-            [imcl_command + " uninstall com.ibm.cic.agent"],
+            [imcl_command + " " + imcl_parameters],
             shell=True,
             stdout=subprocess.PIPE,
             stderr=subprocess.PIPE
@@ -402,35 +407,22 @@ def uninstall(module, module_facts):
                 msg="IBM Installation Manager uninstall failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                module_facts=module_facts
+                result=result
             )
 
         # Module finished
-        module.exit_json(
-            changed=True,
-            msg="IBM Installation Manager uninstalled successfully",
-            stdout=stdout_value,
-            module_facts=module_facts
-        )
+        result['changed'] = True
+        result['msg'] = "IBM Installation Manager uninstalled successfully"
+        result['stdout'] = stdout_value
+        module.exit_json(**result)
     else:
-        module.exit_json(
-            changed=False,
-            msg="IBM Installation Manager is not installed",
-            module_facts=module_facts
-        )
+        result['msg'] = "IBM Installation Manager is not installed"
+        module.exit_json(**result)
 
 
 def run_module():
     """ Runs the module with arguments
     """
-    module_facts = dict(
-        changed=False,
-        im_version='',
-        im_internal_version='',
-        im_arch='',
-        im_header=''
-    )
-
     "seed the result dict in the object"
     result = dict(
         changed=False,
@@ -439,16 +431,14 @@ def run_module():
         im_arch='',
         im_header=''
     )
-
     module = AnsibleModule(
         argument_spec=generate_module_args(),
         supports_check_mode=True
     )
-
     if module.params['state'] == 'present':
-        install(module, module_facts)
+        install(module, result)
     elif module.params['state'] == 'absent':
-        uninstall(module, module_facts)
+        uninstall(module, result)
 
 
 def main():
