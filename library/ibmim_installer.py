@@ -363,7 +363,7 @@ def install(module, result):
                 msg="IBM Installation Manager installation failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                result=result
+                **result
             )
         """ Module finished. Get version of IM after installation so that
         we can print it to the user
@@ -417,7 +417,7 @@ def uninstall(module, result):
                 msg="IBM Installation Manager uninstall failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                result=result
+                **result
             )
 
         # Module finished
