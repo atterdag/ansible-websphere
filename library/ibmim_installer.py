@@ -195,10 +195,10 @@ import re
 from ansible.module_utils.basic import AnsibleModule
 
 
-def isProvisioned(dest):
+def is_installed(dest):
     """Checks if Installation Manager is already installed at dest
     :param dest: Installation directory of Installation Manager
-    :return: True if already provisioned. False if not provisioned
+    :return: True if already installed. False if not installed
     """
 
     """ If destination dir does not exists then its safe to assume that IM is
@@ -207,12 +207,12 @@ def isProvisioned(dest):
     if not os.path.exists(dest):
         return False
     else:
-        if "installed" in getVersion(dest)["im_header"]:
+        if "installed" in get_version(dest)["im_header"]:
             return True
         return False
 
 
-def getVersion(dest):
+def get_version(dest):
     """Runs imcl with the version parameter and stores the output in a dict
     :param dest: Installation directory of Installation Manager
     :return: dict
@@ -301,8 +301,8 @@ def install(module, module_facts):
             )
         )
     "Check if IM is already installed"
-    if not isProvisioned(module.params['dest']):
-        # Check if paths are valid
+    if not is_installed(module.params['dest']):
+        "Check if paths are valid"
         if not os.path.exists(module.params['src']):
             module.fail_json(msg=module.params['src'])
         if not os.path.exists(module.params['logdir']):
@@ -358,7 +358,7 @@ def install(module, module_facts):
         """ Module finished. Get version of IM after installation so that
         we can print it to the user
         """
-        module_facts = getVersion(module.params['dest'])
+        result = get_version(module.params['dest'])
         module.exit_json(
             msg="IBM Installation Manager installed successfully",
             changed=True,
@@ -387,7 +387,7 @@ def uninstall(module, module_facts):
     imcl_command = "{0}/eclipse/tools/imcl".format(module.params['dest'])
 
     "Check if IM is already installed"
-    if isProvisioned(module.params['dest']):
+    if is_installed(module.params['dest']):
         if not os.path.exists(imcl_command):
             module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
