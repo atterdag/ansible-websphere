@@ -18,7 +18,7 @@ ANSIBLE_METADATA = {
 
 DOCUMENTATION = """
 ---
-module: ibmim_installer
+module: ibm_im_installer
 
 short_description:
     - Install/Uninstall IBM Installation Manager
@@ -123,20 +123,20 @@ notes:
 EXAMPLES = """
 # Install IIM into /srv/was/IBMIM using user was
 - name: Install
-    become: yes
-    become_user: was
-    ibmim_installer:
-        state: present
-        src: /srv/was/IBMIM
-        logdir: /srv/was/tmp'
-        accessrights: nonAdmin
+  become: yes
+  become_user: was
+  ibmim_installer:
+    state: present
+    src: /srv/was/IBMIM
+    logdir: /srv/was/tmp'
+    accessrights: nonAdmin
 
 # Uninstall IIM installed in /opt/IBM/InstallationManager as root
 - name: Uninstall
-    become: yes
-    ibmim_installer:
-        state: absent
-        dest: /opt/IBM/InstallationManager
+  become: yes
+  ibmim_installer:
+    state: absent
+    dest: /opt/IBM/InstallationManager
 """
 
 RETURN = """
@@ -223,18 +223,15 @@ def get_version(dest):
         ["{0}/eclipse/tools/imcl version".format(dest)],
         shell=True,
         stdout=subprocess.PIPE,
-        stderr=subprocess.PIPE)
+        stderr=subprocess.PIPE
+    )
     stdout_value, stderr_value = child.communicate()
     result = dict(ansible_facts=dict())
     try:
-        result["ansible_facts"]["iim_version"] = \
-            re.search("Version: ([0-9].*)", stdout_value).group(1)
-        result["ansible_facts"]["iim_internal_version"] = \
-            re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
-        result["ansible_facts"]["iim_arch"] = \
-            re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
-        result["ansible_facts"]["iim_header"] = \
-            re.search("Installation Manager.*", stdout_value).group(0)
+        result["ansible_facts"]["iim_version"] = re.search("Version: ([0-9].*)", stdout_value).group(1)
+        result["ansible_facts"]["iim_internal_version"] = re.search("Internal Version: ([0-9].*)", stdout_value).group(1)
+        result["ansible_facts"]["iim_arch"] = re.search("Architecture: ([0-9].*-bit)", stdout_value).group(1)
+        result["ansible_facts"]["iim_header"] = re.search("Installation Manager.*", stdout_value).group(0)
     except AttributeError:
         pass
     return result
@@ -249,21 +246,45 @@ def generate_module_args():
             default="admin",
             choices=["admin", "nonAdmin", "group"],
             type="str",
-            aliases=["aR"]),
+            aliases=["aR"]
+        ),
         dataLocation=dict(
-            default="/opt/IBM/IMDataLocation", type="path", aliases=["dL"]),
+            default="/opt/IBM/IMDataLocation",
+            type="path",
+            aliases=["dL"]
+        ),
         dest=dict(
             default="/opt/IBM/InstallationManager",
             type="path",
-            aliases=["iD", "installationDirectory"]),
-        logdir=dict(default="/tmp", type="path"),
-        preserve=dict(type="bool"),
-        reponsefile=dict(type="bool", aliases=["record"]),
+            aliases=["iD", "installationDirectory"]
+        ),
+        logdir=dict(
+            default="/tmp",
+            type="path"
+        ),
+        preserve=dict(
+            type="bool"
+        ),
+        reponsefile=dict(
+            type="bool",
+            aliases=["record"]
+        ),
         sharedResourcesDirectory=dict(
-            default="/opt/IBM/IMShared", type="path", aliases=["sRD"]),
-        src=dict(required=True, type="path", aliases=["repositories"]),
+            default="/opt/IBM/IMShared",
+            type="path",
+            aliases=["sRD"]
+        ),
+        src=dict(
+            required=True,
+            type="path",
+            aliases=["repositories"]
+        ),
         state=dict(
-            default="present", choices=["present", "absent"], type="str"))
+            default="present",
+            choices=["present", "absent"],
+            type="str"
+        )
+    )
     return module_args
 
 
@@ -273,8 +294,8 @@ def install(module, result):
     if module.check_mode:
         module.exit_json(
             changed=False,
-            msg="IBM Installation Manager where to be installed at {0}".format(
-                module.params['dest']))
+            msg="IBM Installation Manager where to be installed at {0}".format(module.params['dest'])
+        )
     "Check if IM is already installed"
     if not is_installed(module.params['dest']):
         "Check if paths are valid"
@@ -288,7 +309,8 @@ def install(module, result):
             datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
         responsefile = "install-iim-{0}-{1}-response.xml".format(
             platform.node(),
-            datetime.datetime.now().strftime("%Y%m%d-%H%M%S"))
+            datetime.datetime.now().strftime("%Y%m%d-%H%M%S")
+        )
         imcl_command = "{0}/tools/imcl".format(module.params['src'])
         imcl_parameters = "install com.ibm.cic.agent " \
             "-acceptLicense " \
@@ -314,21 +336,24 @@ def install(module, result):
                     module.params['sharedResourcesDirectory'],
                     module.params['src'],
                     logfile,
-                    responsefile)
+                    responsefile
+            )
         if not os.path.exists(imcl_command):
             module.fail_json(msg=imcl_command + " does not exist")
         child = subprocess.Popen(
             [imcl_command + " " + imcl_parameters],
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE
+        )
         stdout_value, stderr_value = child.communicate()
         if child.returncode != 0:
             module.fail_json(
                 msg="IBM Installation Manager installation failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                **result)
+                **result
+            )
         """ Module finished. Get version of IM after installation so that
         we can print it to the user
         """
@@ -338,14 +363,17 @@ def install(module, result):
             changed=True,
             stdout=stdout_value,
             stderr=stderr_value,
-            **result)
+            **result
+        )
     else:
         result = get_version(module.params['dest'])
         module.exit_json(
             changed=False,
             msg="IBM Installation Manager is already installed at {0}".format(
-                module.params['dest']),
-            **result)
+                module.params['dest']
+            ),
+            **result
+        )
 
 
 def uninstall(module, result):
@@ -357,7 +385,8 @@ def uninstall(module, result):
             changed=False,
             msg="IBM Installation Manager where to be uninstalled from {0}".
             format(module.params('dest')),
-            **result)
+            **result
+        )
     imcl_command = "{0}/eclipse/tools/imcl".format(module.params['dest'])
     imcl_parameters = "uninstall com.ibm.cic.agent"
     "Check if IM is already installed"
@@ -368,14 +397,16 @@ def uninstall(module, result):
             [imcl_command + " " + imcl_parameters],
             shell=True,
             stdout=subprocess.PIPE,
-            stderr=subprocess.PIPE)
+            stderr=subprocess.PIPE
+        )
         stdout_value, stderr_value = child.communicate()
         if child.returncode != 0:
             module.fail_json(
                 msg="IBM Installation Manager uninstall failed",
                 stderr=stderr_value,
                 stdout=stdout_value,
-                **result)
+                **result
+            )
 
         # Module finished
         result['changed'] = True
@@ -397,7 +428,9 @@ def run_module():
             iim_version='',
             iim_internal_version='',
             iim_arch='',
-            iim_header=''))
+            iim_header=''
+        )
+    )
     module = AnsibleModule(
         argument_spec=generate_module_args(), supports_check_mode=True)
     if module.params['state'] == 'present':
